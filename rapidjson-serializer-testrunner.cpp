@@ -1,7 +1,9 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
-#include <json/json.h>
+#include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 using namespace std;
 
@@ -23,13 +25,13 @@ int main(int argc, char** argv) {
     to_parse.assign((std::istreambuf_iterator<char>(inputfile)),
                      std::istreambuf_iterator<char>());
     
-    Json::Value parsed_object;
-    Json::Reader parser;
-    bool result = parser.parse(to_parse, parsed_object);
+    rapidjson::Document doc;
+    doc.Parse(to_parse.c_str());
     chrono::steady_clock::time_point start_time = chrono::steady_clock::now();
     for (int i = 0; i < ntimes; ++i) {
-        Json::FastWriter writer;
-        string output = writer.write(parsed_object);
+        rapidjson::StringBuffer buffer;
+        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+        bool result = doc.Accept(writer);
     }
     chrono::steady_clock::time_point end_time = chrono::steady_clock::now();
     chrono::microseconds us = chrono::duration_cast<chrono::microseconds>(
