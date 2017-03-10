@@ -11,7 +11,7 @@ static uint32_t ntimes = 1000;
 
 int main(int argc, char** argv) {
     
-    if (argc < 2)
+    if (argc < 3)
         return -1;
 
     ntimes = std::stoi(string(argv[2]));
